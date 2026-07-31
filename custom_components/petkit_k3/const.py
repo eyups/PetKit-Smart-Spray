@@ -52,9 +52,11 @@ ACK_OK = "01"
 
 # Telemetry channel mapping (id -> name), determined empirically from the
 # traffic capture (filtered.log). All channel values in the capture were in
-# the 0-100 range, which corresponds to a percentage. Needs verification on
-# a real device: if the readings don't match the PetKit app, swap the ids.
-BATTERY_CHANNEL_ID = 2
+# the 0-100 range, which corresponds to a percentage.
+# Confirmed on a real device: channel 2 (68) did not match the PetKit app's
+# battery reading (97), while channel 4 (96 in the capture) was close to it,
+# so channel 4 is the real battery channel. Channel 2's meaning is unknown.
+BATTERY_CHANNEL_ID = 4
 LIQUID_CHANNEL_ID = 3
 
 # Telemetry polling interval (battery/liquid), in seconds.

@@ -75,11 +75,11 @@ both commands back-to-back, not via a special combined command.
 
 ## Caveats / Follow-ups
 
-- **Channel mapping is unverified**: `id=2`→battery, `id=3`→liquid was
-  inferred from one capture where both values were static. If the
-  displayed percentages don't match the PetKit app, swap
-  `BATTERY_CHANNEL_ID`/`LIQUID_CHANNEL_ID` in `const.py`, or capture a
-  new btsnoop while draining the battery / removing liquid to confirm.
+- **Channel mapping confirmed on a real device**: the initial guess of
+  `id=2`→battery was wrong (showed 68% while the PetKit app showed 97%).
+  `id=4` (96 in the original capture) matches the app's battery reading,
+  so `BATTERY_CHANNEL_ID` is now `4`. `id=3`→liquid (`LIQUID_CHANNEL_ID`)
+  is still unverified; `id=2`'s meaning is unknown.
 - **`SEQ` handling**: kept the existing pattern of hardcoded per-command
   `SEQ` bytes (as the original code did for spray/light) rather than a
   monotonically incrementing counter, since the device didn't appear to

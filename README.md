@@ -39,13 +39,13 @@ Service: 0000aaa0-0000-1000-8000-00805f9b34fb
 ### Telemetry (battery/liquid):
 The device periodically sends status on the `0000aaa1` notify
 characteristic. The status frame (`CMD=0xD3`, also arrives as push
-`CMD=0xE6`) contains `[id, value, 0x7f]` triplets. Analysis of the
-`filtered.log` capture identified the mapping: `id=2` → battery (%),
-`id=3` → liquid level (%). Value `id=4` is currently unused.
+`CMD=0xE6`) contains `[id, value, 0x7f]` triplets: `id=4` → battery (%),
+`id=3` → liquid level (%). Value `id=2` is currently unused.
 
-> ⚠️ The id mapping was inferred empirically from a single traffic
-> capture where the readings stayed constant. If the percentages don't
-> match the PetKit app, adjust `BATTERY_CHANNEL_ID`/`LIQUID_CHANNEL_ID`
-> in `const.py`.
+> ⚠️ Confirmed on a real device: `id=2` was initially assumed to be
+> battery but read 68% while the PetKit app showed 97%; `id=4` (96 in
+> the original capture) matches the app instead. `id=3` (liquid level)
+> is still unverified — if it doesn't match the app, adjust
+> `LIQUID_CHANNEL_ID` in `const.py`.
 
 Special thanks to @Jezza34000 for his library, it helped in the development of this integration.
