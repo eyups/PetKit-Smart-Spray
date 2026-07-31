@@ -30,6 +30,8 @@ from .const import (
     BATTERY_CHANNEL_ID,
     LIQUID_CHANNEL_ID,
     STATUS_POLL_INTERVAL,
+    DEFAULT_SPRAY_REPEAT_COUNT,
+    SPRAY_REPEAT_WAIT,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -86,6 +88,9 @@ class PetkitK3Device:
         # Device telemetry (populated from notifications/status polling)
         self.battery_level = None
         self.liquid_level = None
+        # How many times async_spray() repeats the fixed-length spray cycle
+        # (there's no BLE parameter for spray duration, see SPRAY_REPEAT_WAIT).
+        self.spray_repeat_count = DEFAULT_SPRAY_REPEAT_COUNT
         self._shutdown = False
         self._notify_started = False
         self.lock = asyncio.Lock()  # Lock for sequential command execution
@@ -283,9 +288,23 @@ class PetkitK3Device:
         The command order (spray, then light) was observed in the official
         PetKit app's traffic capture — this is how the light stays on during
         spraying (the "light on during spray" feature).
+
+        There's no BLE parameter for spray duration (each SPRAY_CMD triggers
+        one fixed-length cycle), so a longer spray is done by repeating the
+        command `spray_repeat_count` times, waiting for one cycle to finish
+        (SPRAY_REPEAT_WAIT) between repeats.
         """
-        resp = await self.send_command(SPRAY_CMD)
-        if resp == ACK_OK:
+        resp = None
+        for i in range(max(1, self.spray_repeat_count)):
+            if i > 0:
+                await asyncio.sleep(SPRAY_REPEAT_WAIT)
+            resp = await self.send_command(SPRAY_CMD)
+            if resp != ACK_OK:
+                break
+        # LIGHT_CMD toggles the light (there's no separate on/off command),
+        # so only send it if the light is currently off, otherwise spraying
+        # while the light is already on would turn it off instead.
+        if resp == ACK_OK and not self.light_on:
             light_resp = await self.send_command(LIGHT_CMD)
             if light_resp == ACK_OK:
                 self.light_on = True

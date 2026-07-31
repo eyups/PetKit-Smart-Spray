@@ -1,6 +1,6 @@
 # const.py
 DOMAIN = "petkit_k3"
-PLATFORMS = ["light", "button", "sensor"]
+PLATFORMS = ["light", "button", "sensor", "number"]
 
 DEFAULT_REGION = "US"
 DEFAULT_TIMEZONE = ""
@@ -63,3 +63,12 @@ LIQUID_CHANNEL_ID = 3
 STATUS_POLL_INTERVAL = 300
 
 SCAN_INTERVAL = 60  # heartbeat period in seconds
+
+# The device has no BLE parameter for spray duration; a single SPRAY_CMD
+# triggers one fixed-length spray cycle (observed ~26-30s). To spray longer,
+# the only option is to repeat SPRAY_CMD after each cycle finishes.
+DEFAULT_SPRAY_REPEAT_COUNT = 1
+MIN_SPRAY_REPEAT_COUNT = 1
+MAX_SPRAY_REPEAT_COUNT = 10
+# How long to wait between repeats, in seconds (must cover one full spray cycle).
+SPRAY_REPEAT_WAIT = 30
