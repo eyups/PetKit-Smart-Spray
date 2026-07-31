@@ -2,8 +2,8 @@
 DOMAIN = "petkit_k3"
 PLATFORMS = ["light", "button", "sensor"]
 
-DEFAULT_REGION = "FR"
-DEFAULT_TIMEZONE = "Asia/Yekaterinburg"
+DEFAULT_REGION = "US"
+DEFAULT_TIMEZONE = ""
 
 CONF_USERNAME = "username"
 CONF_PASSWORD = "password"
