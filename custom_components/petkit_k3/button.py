@@ -14,6 +14,10 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     async_add_entities(entities, update_before_add=True)
 
 class PetkitK3SprayButton(ButtonEntity):
+    # ButtonEntity defaults to should_poll=False, but availability is driven
+    # by the controller's BLE connection state, so poll it like light/sensor.
+    _attr_should_poll = True
+
     def __init__(self, device_id, device_controller):
         self._device_id = device_id
         self._controller = device_controller
@@ -23,6 +27,10 @@ class PetkitK3SprayButton(ButtonEntity):
     @property
     def available(self):
         return self._controller.available
+
+    async def async_update(self):
+        # Nothing to fetch; this just makes HA re-evaluate `available` periodically.
+        pass
 
     @property
     def device_info(self) -> DeviceInfo:

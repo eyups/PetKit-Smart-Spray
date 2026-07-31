@@ -203,16 +203,6 @@ class PetkitK3Device:
                     self._notify_started = False
                     _LOGGER.error(f"Failed to subscribe to notifications for {self.mac}: {e}")
 
-                # Update entity state (example for the spray button)
-                safe_name = self.name.lower().replace(" ", "_")
-                self.hass.async_create_task(
-                    self.hass.services.async_call(
-                        "homeassistant",
-                        "update_entity",
-                        {"entity_id": f"button.{safe_name}_spray"}
-                    )
-                )
-
                 self._connect_attempts = 0
                 self._reconnect_delay = 10
                 return True
