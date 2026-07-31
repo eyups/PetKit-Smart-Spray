@@ -21,6 +21,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         petkit_device = PetkitK3Device(hass, name, mac, secret)
         hass.data[DOMAIN][device_id] = petkit_device
         hass.loop.create_task(petkit_device.heartbeat_loop())
+        hass.loop.create_task(petkit_device.status_poll_loop())
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 

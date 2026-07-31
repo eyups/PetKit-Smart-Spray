@@ -4,50 +4,13 @@
 <img src="https://static.insales-cdn.com/images/products/1/6584/558168504/IMG_7256.JPG" alt="Petkit K3" width="300"/>
 </div>
 
-## 🇷🇺 Русская версия
-
-### Функциональность:
-В текущей версии поддерживаются следующие функции:
-- ✨ Распыление (работает 10 секунд, затем автоматически отключается)
-- 💡 Подсветка (включается на 10 секунд, не работает во время распыления)
-
-### Инициализация устройства:
-Для работы требуется выполнить два этапа:
-1. Инициализация: `fafcfdd501000000fb`
-2. Аутентификация: `fafcfd560101080000001d7eaf21ed20fb`
-
-### UUID для управления:
-Основной UUID для записи команд:
-- `0000aaa2-0000-1000-8000-00805f9b34fb`
-
-### Доступные сервисы и характеристики:
-```
-Сервис: 00001800-0000-1000-8000-00805f9b34fb
-├── Характеристика: 00002a00-0000-1000-8000-00805f9b34fb [read, notify]
-├── Характеристика: 00002a01-0000-1000-8000-00805f9b34fb [read]
-└── Характеристика: 00002a04-0000-1000-8000-00805f9b34fb [read]
-
-Сервис: 00001801-0000-1000-8000-00805f9b34fb
-└── Характеристика: 00002a05-0000-1000-8000-00805f9b34fb [indicate]
-
-Сервис: 0000aaa0-0000-1000-8000-00805f9b34fb
-├── Характеристика: 0000aaa2-0000-1000-8000-00805f9b34fb [write-without-response, write]
-└── Характеристика: 0000aaa1-0000-1000-8000-00805f9b34fb [read, notify]
-```
-
-### 🚧 В разработке:
-- Считывание уровня заряда батареи
-- Мониторинг уровня жидкости
-- Работа подсветки во время распыления
-
----
-
-## 🇬🇧 English Version
-
-### Functionality:
+## Functionality:
 Current version supports:
 - ✨ Spray function (operates for 10 seconds, then automatically turns off)
-- 💡 Light function (turns on for 10 seconds, doesn't work during spraying)
+- 💡 Light function (turns on for 10 seconds)
+- 💡 Light automatically turns on during spraying
+- 🔋 Battery level reading
+- 💧 Liquid (detergent) level monitoring
 
 ### Device Initialization:
 Two steps are required:
@@ -73,9 +36,16 @@ Service: 0000aaa0-0000-1000-8000-00805f9b34fb
 └── Characteristic: 0000aaa1-0000-1000-8000-00805f9b34fb [read, notify]
 ```
 
-### 🚧 In Development:
-- Battery level reading
-- Liquid level monitoring
-- Operation of the backlight during spraying
+### Telemetry (battery/liquid):
+The device periodically sends status on the `0000aaa1` notify
+characteristic. The status frame (`CMD=0xD3`, also arrives as push
+`CMD=0xE6`) contains `[id, value, 0x7f]` triplets. Analysis of the
+`filtered.log` capture identified the mapping: `id=2` → battery (%),
+`id=3` → liquid level (%). Value `id=4` is currently unused.
+
+> ⚠️ The id mapping was inferred empirically from a single traffic
+> capture where the readings stayed constant. If the percentages don't
+> match the PetKit app, adjust `BATTERY_CHANNEL_ID`/`LIQUID_CHANNEL_ID`
+> in `const.py`.
 
 Special thanks to @Jezza34000 for his library, it helped in the development of this integration.

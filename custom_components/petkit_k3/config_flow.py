@@ -25,7 +25,7 @@ class PetkitK3ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             try:
                 devices = await self._fetch_devices(username, password, region, timezone)
             except Exception as e:
-                _LOGGER.exception("Ошибка при подключении к API")
+                _LOGGER.exception("Error connecting to API")
                 errors["base"] = "cannot_connect"
             else:
                 if not devices:

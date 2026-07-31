@@ -2,7 +2,7 @@
 import logging
 from homeassistant.components.button import ButtonEntity
 from homeassistant.helpers.entity import DeviceInfo
-from .const import DOMAIN, SPRAY_CMD
+from .const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -34,6 +34,8 @@ class PetkitK3SprayButton(ButtonEntity):
         )
 
     async def async_press(self):
-        resp = await self._controller.send_command(SPRAY_CMD)
-        if resp != "00":
-            _LOGGER.error(f"Ошибка запуска спрея для {self._controller.mac}")
+        # async_spray() triggers the spray and immediately turns on the light,
+        # so it stays on while the spray is running.
+        resp = await self._controller.async_spray()
+        if resp != "01":
+            _LOGGER.error(f"Error triggering spray for {self._controller.mac}")

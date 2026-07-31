@@ -38,11 +38,11 @@ class PetkitK3Light(LightEntity):
 
     async def async_turn_on(self, **kwargs):
         resp = await self._controller.send_command(LIGHT_CMD)
-        if resp == "00":
+        if resp == "01":
             self._controller.light_on = not self._controller.light_on
             self._attr_is_on = self._controller.light_on
         else:
-            _LOGGER.error(f"Ошибка включения света для {self._controller.mac}")
+            _LOGGER.error(f"Error turning on light for {self._controller.mac}")
         self.async_write_ha_state()
 
     async def async_turn_off(self, **kwargs):
